@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Company</title>
+</head>
+<body>
+<h1>Create Company</h1>
+
+<form th:action="@{/saveCompany}" th:object="${company}" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" th:field="*{name}" required>
+    <br>
+
+    <label for="industry">Industry:</label>
+    <input type="text" id="industry" th:field="*{industry}" required>
+    <br>
+
+    <label for="description">Description:</label><br/>
+    <textarea id="description" th:field="*{description}" rows="4" cols="50" required></textarea>
+    <br/>
+
+    <br>
+
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

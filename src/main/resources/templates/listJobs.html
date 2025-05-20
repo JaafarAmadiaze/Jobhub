@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Offres d'emploi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- ✅ Toast Success -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toastSuccess"
+         class="toast align-items-center text-bg-success border-0"
+         th:classappend="${param.success == 'applied'} ? ' show' : ''"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                ✅ Candidature envoyée avec succès !
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ HEADER -->
+<header class="bg-light shadow-sm mb-4">
+    <div class="container py-3 d-flex justify-content-between align-items-center">
+        <h1 class="h4 text-primary">JobHub</h1>
+
+        <nav class="nav gap-3">
+
+            <!-- ✅ Affiché pour tous les utilisateurs connectés -->
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
+                <a href="/" class="nav-link">Accueil</a>
+                <a href="/listJobs" class="nav-link">Offres</a>
+                <a href="/listCompanies" class="nav-link">Entreprises</a>
+
+            </div>
+
+            <!-- 👤 CANDIDATE uniquement -->
+            <div th:if="${currentUserRole == 'CANDIDATE'}" class="d-flex gap-3">
+                <a href="/myApplications" class="nav-link">Mes candidatures</a>
+            </div>
+
+            <!-- 🧑‍💼 RECRUITER uniquement -->
+            <div th:if="${currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
+                <a href="/applicationsReceived" class="nav-link">Reçues</a>
+            </div>
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="nav-link">Se déconnecter</button>
+                </form>
+            </div>
+
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <h2 class="text-center mb-4">Offres d'emploi disponibles</h2>
+
+    <!-- ✅ Formulaire de filtre -->
+    <form method="get" action="/listJobs" class="mb-4 text-center d-flex justify-content-center gap-3 flex-wrap">
+        <!-- ✅ Filtrer par catégorie -->
+        <div>
+            <label for="categoryId" class="form-label">Filtrer par catégorie :</label>
+            <select id="categoryId" name="categoryId" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
+                <option value="">-- Toutes les catégories --</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${selectedCategoryId == cat.id}">
+                </option>
+            </select>
+        </div>
+
+        <!-- ✅ Trier par date -->
+        <div>
+            <label for="sort" class="form-label">Trier par :</label>
+            <select id="sort" name="sort" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
+                <option value="newest" th:selected="${selectedSort == 'newest'}">Plus récentes</option>
+                <option value="oldest" th:selected="${selectedSort == 'oldest'}">Plus anciennes</option>
+            </select>
+        </div>
+    </form>
+
+    <!-- ✅ Grille de jobs -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col-sm-6" th:each="job : ${jobs}">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${job.title}">Titre</h5>
+                    <a th:href="@{/company/{id}(id=${job.company.id})}" class="card-subtitle mb-2 text-muted" th:text="${job.company.name}">Entreprise</a>
+
+                    <p class="card-text mb-1"><strong>Lieu:</strong> <span th:text="${job.location}">Lieu</span></p>
+                    <p class="card-text mb-3"><strong>Salaire:</strong> <span th:text="${job.salary}">Salaire</span></p>
+
+                    <a th:href="@{/job/{id}(id=${job.id})}" class="text-primary text-decoration-underline d-block mb-2">
+                        Voir les détails
+                    </a>
+
+                    <div th:if="${job.recruiter != null and job.recruiter.email != null and currentUserEmail == job.recruiter.email}" class="mt-2">
+                        <a th:href="@{/editJob(id=${job.id})}" class="btn btn-sm btn-warning me-2">✏️ Modifier</a>
+                        <a th:href="@{/deleteJob(id=${job.id})}" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?')">🗑️ Supprimer</a>
+                    </div>
+
+                    <div th:if="${currentUserRole == 'CANDIDATE'}" class="mt-2">
+                        <a th:href="@{/apply/{id}(id=${job.id})}" class="btn btn-sm btn-primary">📄 Postuler</a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted text-end small" th:text="${#temporals.format(job.createdAt, 'd MMM yyyy')}">1 avr. 2025</div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="text-center py-4 border-top mt-5">
+    <p class="text-muted">&copy; 2025 JobHub. Tous droits réservés.</p>
+</footer>
+
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+
+    <!-- ✅ Toast de succès -->
+    <div id="successToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true" th:if="${param.success == 'applied'}">
+        <div class="toast-header">
+            <strong class="me-auto">Succès</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
+        </div>
+        <div class="toast-body">
+            ✅ Candidature envoyée avec succès !
+        </div>
+    </div>
+
+    <!-- ❌ Toast d'erreur -->
+    <div id="errorToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true" th:if="${param.error == 'alreadyApplied'}">
+        <div class="toast-header">
+            <strong class="me-auto">Erreur</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
+        </div>
+        <div class="toast-body">
+            ⚠️ Vous avez déjà postulé à cette offre.
+        </div>
+    </div>
+
+</div>
+
+
+
+</body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("success") === "applied") {
+            const toastEl = document.getElementById("successToast");
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        }
+
+
+        const toastErrorEl = document.getElementById('toastError');
+        if (toastErrorEl) {
+            const toastError = new bootstrap.Toast(toastErrorEl);
+            toastError.show();
+        }
+    });
+</script>

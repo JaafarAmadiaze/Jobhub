@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Board Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="flex flex-col min-h-screen">
+
+<!-- Navbar (you can include via fragment if needed) -->
+<header class="bg-white shadow">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-blue-600">JobHub</h1>
+        <nav class="space-x-4">
+            <a href="/" class="text-gray-600 hover:text-blue-600">Home</a>
+            <a href="/login" class="text-gray-600 hover:text-blue-600">Login</a>
+            <a href="/register" class="text-gray-600 hover:text-blue-600">Sign-up</a>
+        </nav>
+    </div>
+</header>
+
+<main class="flex-grow">
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-teal-500 text-white py-16 md:py-24 text-center">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Find Your Dream Tech Job</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                Connect with top employers and discover opportunities that match your skills and ambitions
+            </p>
+
+            <div class="flex justify-center gap-4">
+                <a href="/listJobs" class="bg-white text-blue-600 font-semibold px-6 py-3 rounded hover:bg-blue-100">Browse All Jobs</a>
+                <a href="/createJob" class="border border-white text-white px-6 py-3 rounded hover:bg-white hover:text-blue-600">For Employers</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Jobs -->
+    <section class="py-16 bg-gray-50 text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-4">Featured Jobs</h2>
+            <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
+                Explore our handpicked selection of top tech opportunities
+            </p>
+
+            <!-- Placeholder for jobs -->
+
+
+            <div class="mt-10">
+                <a href="/listJobs" class="border border-gray-400 text-gray-700 px-6 py-3 rounded hover:bg-gray-100">View All Jobs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-16 bg-white text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-4">Why Choose JobHub?</h2>
+            <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
+                We connect talented professionals with top companies
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-100 p-6 rounded shadow text-center">
+                    <h3 class="text-xl font-semibold mb-2">Smart Job Matching</h3>
+                    <p class="text-gray-600">Find roles that align with your skills and career goals</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded shadow text-center">
+                    <h3 class="text-xl font-semibold mb-2">Real-Time Updates</h3>
+                    <p class="text-gray-600">Get notified when jobs match your preferences</p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded shadow text-center">
+                    <h3 class="text-xl font-semibold mb-2">Trusted Employers</h3>
+                    <p class="text-gray-600">Only companies known for strong work culture</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="bg-gray-900 text-white py-16 text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-4">Ready to Find Your Next Opportunity?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Browse our job listings or create an employer account to post new opportunities
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/listJobs" class="bg-blue-600 px-6 py-3 rounded text-white font-semibold hover:bg-blue-700">Search Jobs</a>
+                <a href="/createJob" class="border border-white px-6 py-3 rounded text-white hover:bg-white hover:text-blue-600">Post a Job</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-100 text-center py-6">
+    <p class="text-gray-600 text-sm">&copy; 2025 JobHub. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
