@@ -66,13 +66,16 @@
         </div>
 
         <!-- Postuler -->
-        <form method="post" th:action="@{/apply}" class="mt-6">
-            <input type="hidden" name="jobId" th:value="${job.id}" />
-            <button type="submit"
-                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
-                Postuler à cette offre
-            </button>
-        </form>
+        <a th:href="@{/apply/{id}(id=${job.id})}"
+           class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white border border-blue-700
+          hover:from-blue-700 hover:via-blue-800 hover:to-blue-900
+          focus:ring-4 focus:outline-none focus:ring-blue-300
+          font-semibold rounded-lg text-sm px-5 py-2.5 text-center
+          transition duration-300 shadow-lg">
+            🚀 Postuler maintenant
+        </a>
+
+
     </div>
 </div>
 

@@ -1,178 +1,132 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Candidatures Reçues</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-light">
-<header class="bg-light shadow-sm mb-4">
-    <div class="container py-3 d-flex justify-content-between align-items-center">
-        <h1 class="h4 text-primary">JobHub</h1>
-
-        <nav class="nav gap-3">
-            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <a href="/" class="nav-link">Accueil</a>
-                <a href="/listJobs" class="nav-link">Offres</a>
-                <a href="/listCompanies" class="nav-link">Entreprises</a>
+<body class="bg-gray-100 text-gray-800">
+<header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-semibold text-blue-600">JobHub</h1>
+        <nav class="flex gap-6">
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="flex gap-4">
+                <a href="/" class="text-gray-700 hover:text-blue-600">Accueil</a>
+                <a href="/listJobs" class="text-gray-700 hover:text-blue-600">Offres</a>
+                <a href="/listCompanies" class="text-gray-700 hover:text-blue-600">Entreprises</a>
             </div>
-
-            <div th:if="${currentUserRole == 'CANDIDATE'}" class="d-flex gap-3">
-                <a href="/myApplications" class="nav-link">Mes candidatures</a>
+            <div th:if="${currentUserRole == 'CANDIDATE'}">
+                <a href="/myApplications" class="text-gray-700 hover:text-blue-600">Mes candidatures</a>
             </div>
-
-            <div th:if="${currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <a href="/applicationsReceived" class="nav-link">Reçues</a>
+            <div th:if="${currentUserRole == 'RECRUITER'}">
+                <a href="/applicationsReceived" class="text-gray-700 hover:text-blue-600">Reçues</a>
             </div>
-
-            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="nav-link ">Se déconnecter</button>
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="text-red-600 hover:underline">Se déconnecter</button>
                 </form>
             </div>
         </nav>
     </div>
 </header>
 
-
-<div class="container mt-5">
-    <h2 class="mb-4 text-primary text-center">📥 Candidatures reçues</h2>
-
-    <!-- Messages -->
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+<main class="max-w-7xl mx-auto px-4 py-8">
+    <h2 class="text-center text-3xl font-bold text-blue-600 mb-6">📥 Candidatures Reçues</h2>
 
     <!-- Statistiques -->
-    <div class="row text-center mb-4">
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Total</h5>
-                    <p class="card-text fw-bold" th:text="${stats.total}"></p>
-                </div>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium">Total</h3>
+            <p class="text-2xl font-bold" th:text="${stats.total}"></p>
         </div>
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title text-warning">🟡 En attente</h5>
-                    <p class="card-text fw-bold" th:text="${stats.PENDING}"></p>
-                </div>
-            </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium text-yellow-500">🟡 En attente</h3>
+            <p class="text-2xl font-bold" th:text="${stats.PENDING}"></p>
         </div>
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title text-success">✅ Acceptées</h5>
-                    <p class="card-text fw-bold" th:text="${stats.APPROVED}"></p>
-                </div>
-            </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium text-green-600">✅ Acceptées</h3>
+            <p class="text-2xl font-bold" th:text="${stats.APPROVED}"></p>
         </div>
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title text-danger">❌ Refusées</h5>
-                    <p class="card-text fw-bold" th:text="${stats.REJECTED}"></p>
-                </div>
-            </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium text-red-600">❌ Refusées</h3>
+            <p class="text-2xl font-bold" th:text="${stats.REJECTED}"></p>
         </div>
     </div>
+
     <!-- Filtres de recherche -->
-    <form class="row g-3 mb-4" method="get" action="/applicationsReceived">
-        <div class="col-md-6">
-            <input type="text" class="form-control" name="keyword" placeholder="🔍 Rechercher un candidat ou un job..." th:value="${keyword}">
-        </div>
-        <div class="col-md-4">
-            <select class="form-select" name="status" th:value="${status}">
-                <option value="">📋 Tous les statuts</option>
-                <option value="PENDING">🟡 En attente</option>
-                <option value="APPROVED">✅ Acceptée</option>
-                <option value="REJECTED">❌ Refusée</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">🔎 Rechercher</button>
-        </div>
+    <form class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" method="get" action="/applicationsReceived">
+        <input type="text" name="keyword" class="p-2 border rounded-lg" placeholder="🔍 Rechercher..." th:value="${keyword}">
+        <select name="status" class="p-2 border rounded-lg" th:value="${status}">
+            <option value="">📋 Tous les statuts</option>
+            <option value="PENDING">🟡 En attente</option>
+            <option value="APPROVED">✅ Acceptée</option>
+            <option value="REJECTED">❌ Refusée</option>
+        </select>
+        <button type="submit" class="bg-blue-600 text-white rounded-lg px-4 py-2">🔎 Rechercher</button>
     </form>
 
     <!-- Tableau -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover bg-white">
-            <thead class="table-primary">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left bg-white border rounded-lg">
+            <thead class="bg-blue-100 text-blue-900">
             <tr>
-                <th>Job</th>
-                <th>Entreprise</th>
-                <th>Lieu</th>
-                <th>Candidat</th>
-                <th>Email</th>
-                <th>Date</th>
-                <th>Statut</th>
-                <th>Actions</th>
+                <th class="p-3">Job</th>
+                <th class="p-3">Entreprise</th>
+                <th class="p-3">Lieu</th>
+                <th class="p-3">Candidat</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Date</th>
+                <th class="p-3">Statut</th>
+                <th class="p-3">Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="app : ${applications}">
-                <td th:text="${app.job.title}"></td>
-                <td th:text="${app.job.company.name}"></td>
-                <td th:text="${app.job.location}"></td>
-                <td th:text="${app.candidate.firstName + ' ' + app.candidate.lastName}"></td>
-                <td th:text="${app.candidate.email}"></td>
-                <td th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy')}"></td>
-                <td>
-                    <span class="badge text-bg-warning" th:if="${app.status == 'PENDING'}">En attente</span>
-                    <span class="badge text-bg-success" th:if="${app.status == 'APPROVED'}">Acceptée</span>
-                    <span class="badge text-bg-danger" th:if="${app.status == 'REJECTED'}">Refusée</span>
+            <tr th:each="app : ${applications}" class="border-t">
+                <td class="p-3" th:text="${app.job.title}"></td>
+                <td class="p-3" th:text="${app.job.company.name}"></td>
+                <td class="p-3" th:text="${app.job.location}"></td>
+                <td class="p-3" th:text="${app.candidate.firstName + ' ' + app.candidate.lastName}"></td>
+                <td class="p-3" th:text="${app.candidate.email}"></td>
+                <td class="p-3" th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy')}"></td>
+                <td class="p-3">
+                    <span th:if="${app.status == 'PENDING'}" class="text-yellow-600 font-semibold">En attente</span>
+                    <span th:if="${app.status == 'APPROVED'}" class="text-green-600 font-semibold">Acceptée</span>
+                    <span th:if="${app.status == 'REJECTED'}" class="text-red-600 font-semibold">Refusée</span>
                 </td>
-                <td>
-                    <div th:if="${app.status == 'PENDING'}" class="mb-1">
-                        <form action="/updateStatus" method="post" class="d-inline">
-                            <input type="hidden" name="id" th:value="${app.id}"/>
-                            <input type="hidden" name="status" value="APPROVED"/>
-                            <button type="submit" class="btn btn-success btn-sm">✅</button>
-                        </form>
-                        <form action="/updateStatus" method="post" class="d-inline">
-                            <input type="hidden" name="id" th:value="${app.id}"/>
-                            <input type="hidden" name="status" value="REJECTED"/>
-                            <button type="submit" class="btn btn-danger btn-sm">❌</button>
-                        </form>
-                    </div>
+                <td class="p-3 flex gap-2 flex-wrap">
+                    <!-- ✅ Bouton Accepter -->
+                    <form th:if="${app.status == 'PENDING'}" action="/updateStatus" method="post">
+                        <input type="hidden" name="id" th:value="${app.id}" />
+                        <input type="hidden" name="status" value="APPROVED" />
+                        <button type="submit"
+                                class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            ✅ Accepter
+                        </button>
+                    </form>
 
-                    <!-- Button to open modal -->
-                    <button class="btn btn-outline-primary btn-sm"
+                    <!-- ❌ Bouton Refuser -->
+                    <form th:if="${app.status == 'PENDING'}" action="/updateStatus" method="post">
+                        <input type="hidden" name="id" th:value="${app.id}" />
+                        <input type="hidden" name="status" value="REJECTED" />
+                        <button type="submit"
+                                class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            ❌ Refuser
+                        </button>
+                    </form>
+
+                    <!-- 📄 Bouton Détails -->
+                    <button type="button"
+                            class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                             data-bs-toggle="modal"
                             th:attr="data-bs-target='#detailsModal-' + ${app.id}">
-                        📄 Voir détails
+                        📄 Détails
                     </button>
-
-                    <!-- Modal -->
-                    <div class="modal fade" th:id="'detailsModal-' + ${app.id}" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">📋 Détails de la candidature</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>Compétences :</strong> <span th:text="${app.skills} ?: 'Non spécifiées'"></span></p>
-                                    <p><strong>Certificats :</strong> <span th:text="${app.certifications} ?: 'Non spécifiés'"></span></p>
-                                    <p><strong>Langues :</strong> <span th:text="${app.languages} ?: 'Non spécifiées'"></span></p>
-                                    <p><strong>Projets :</strong> <span th:text="${app.projects} ?: 'Non spécifiés'"></span></p>
-                                    <p><strong>Loisirs :</strong> <span th:text="${app.hobbies} ?: 'Non spécifiés'"></span></p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End modal -->
                 </td>
+
             </tr>
             </tbody>
         </table>
     </div>
-</div>
-
+</main>
 </body>
 </html>

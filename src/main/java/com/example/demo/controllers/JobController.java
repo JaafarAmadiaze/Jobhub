@@ -102,7 +102,7 @@ public class JobController {
     public String editJob(@RequestParam("id") Long id, Model model) {
         Job job = jobService.getJobById(id);
 
-        // Vérifie si le recruteur connecté est bien l’auteur
+        // If the one who's connected  est un recruteur
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if (!job.getRecruiter().getEmail().equals(email)) {
             return "redirect:/listJobs?error=unauthorized";

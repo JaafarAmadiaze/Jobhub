@@ -3,116 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <title>Offres d'emploi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body>
 
-<!-- ✅ Toast Success -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-    <div id="toastSuccess"
-         class="toast align-items-center text-bg-success border-0"
-         th:classappend="${param.success == 'applied'} ? ' show' : ''"
-         role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                ✅ Candidature envoyée avec succès !
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
-        </div>
-    </div>
-</div>
-
 <!-- ✅ HEADER -->
-<header class="bg-light shadow-sm mb-4">
-    <div class="container py-3 d-flex justify-content-between align-items-center">
-        <h1 class="h4 text-primary">JobHub</h1>
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-blue-600">JobHub</h1>
 
-        <nav class="nav gap-3">
-
+        <nav class="flex items-center gap-6 text-sm">
             <!-- ✅ Affiché pour tous les utilisateurs connectés -->
-            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <a href="/" class="nav-link">Accueil</a>
-                <a href="/listJobs" class="nav-link">Offres</a>
-                <a href="/listCompanies" class="nav-link">Entreprises</a>
-
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="flex gap-6">
+                <a href="/" class="text-gray-600 hover:text-blue-600 transition-colors">Accueil</a>
+                <a href="/listJobs" class="text-gray-600 hover:text-blue-600 transition-colors">Offres</a>
+                <a href="/listCompanies" class="text-blue-700 font-medium">Entreprises</a>
             </div>
 
             <!-- 👤 CANDIDATE uniquement -->
-            <div th:if="${currentUserRole == 'CANDIDATE'}" class="d-flex gap-3">
-                <a href="/myApplications" class="nav-link">Mes candidatures</a>
+            <div th:if="${currentUserRole == 'CANDIDATE'}" class="flex gap-6">
+                <a href="/myApplications" class="text-gray-600 hover:text-blue-600 transition-colors">Mes candidatures</a>
             </div>
 
             <!-- 🧑‍💼 RECRUITER uniquement -->
-            <div th:if="${currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <a href="/applicationsReceived" class="nav-link">Reçues</a>
-            </div>
-            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="nav-link">Se déconnecter</button>
-                </form>
+            <div th:if="${currentUserRole == 'RECRUITER'}" class="flex gap-6">
+                <a href="/applicationsReceived" class="text-gray-600 hover:text-blue-600 transition-colors">Reçues</a>
             </div>
 
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="flex gap-6">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="text-red-500 hover:text-red-700 hover:underline transition-colors">Se déconnecter</button>
+                </form>
+            </div>
         </nav>
     </div>
 </header>
 
-<main class="container">
-    <h2 class="text-center mb-4">Offres d'emploi disponibles</h2>
+<main class="max-w-7xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold text-center mb-8">Offres d'emploi disponibles</h2>
 
     <!-- ✅ Formulaire de filtre -->
-    <form method="get" action="/listJobs" class="mb-4 text-center d-flex justify-content-center gap-3 flex-wrap">
-        <!-- ✅ Filtrer par catégorie -->
-        <div>
-            <label for="categoryId" class="form-label">Filtrer par catégorie :</label>
-            <select id="categoryId" name="categoryId" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
-                <option value="">-- Toutes les catégories --</option>
-                <option th:each="cat : ${categories}"
-                        th:value="${cat.id}"
-                        th:text="${cat.name}"
-                        th:selected="${selectedCategoryId == cat.id}">
-                </option>
-            </select>
-        </div>
+    <form method="get" action="/listJobs" class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div class="flex flex-wrap items-end gap-6">
+            <div class="flex-1 min-w-[200px]">
+                <label for="categoryId" class="block mb-2 text-sm font-medium text-gray-700">Filtrer par catégorie</label>
+                <select
+                        id="categoryId"
+                        name="categoryId"
+                        onchange="this.form.submit()"
+                        class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition-all"
+                >
+                    <option value="">Toutes les catégories</option>
+                    <option
+                            th:each="cat : ${categories}"
+                            th:value="${cat.id}"
+                            th:text="${cat.name}"
+                            th:selected="${selectedCategoryId == cat.id}"
+                    ></option>
+                </select>
+            </div>
 
-        <!-- ✅ Trier par date -->
-        <div>
-            <label for="sort" class="form-label">Trier par :</label>
-            <select id="sort" name="sort" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
-                <option value="newest" th:selected="${selectedSort == 'newest'}">Plus récentes</option>
-                <option value="oldest" th:selected="${selectedSort == 'oldest'}">Plus anciennes</option>
-            </select>
+            <div class="flex-1 min-w-[200px]">
+                <label for="sort" class="block mb-2 text-sm font-medium text-gray-700">Trier par</label>
+                <select
+                        id="sort"
+                        name="sort"
+                        onchange="this.form.submit()"
+                        class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition-all"
+                >
+                    <option value="newest" th:selected="${selectedSort == 'newest'}">Plus récentes</option>
+                    <option value="oldest" th:selected="${selectedSort == 'oldest'}">Plus anciennes</option>
+                </select>
+            </div>
+
+            <div class="flex-1 min-w-[200px]">
+                <button
+                        type="submit"
+                        class="w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Appliquer les filtres
+                </button>
+            </div>
         </div>
     </form>
 
-    <!-- ✅ Grille de jobs -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <div class="col-sm-6" th:each="job : ${jobs}">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${job.title}">Titre</h5>
-                    <a th:href="@{/company/{id}(id=${job.company.id})}" class="card-subtitle mb-2 text-muted" th:text="${job.company.name}">Entreprise</a>
+    <!-- ✅ Grille responsive des jobs -->
 
-                    <p class="card-text mb-1"><strong>Lieu:</strong> <span th:text="${job.location}">Lieu</span></p>
-                    <p class="card-text mb-3"><strong>Salaire:</strong> <span th:text="${job.salary}">Salaire</span></p>
+        <div th:if="${jobs.size() > 0}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div th:each="job : ${jobs}" class="bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg transition-shadow">
+                <div class="p-6">
+                    <h5 class="text-lg font-semibold text-blue-800 mb-1" th:text="${job.title}">Titre</h5>
+                    <a th:href="@{/company/{id}(id=${job.company.id})}" class="text-sm text-gray-500 hover:text-blue-600 mb-2 block" th:text="${job.company.name}">Entreprise</a>
 
-                    <a th:href="@{/job/{id}(id=${job.id})}" class="text-primary text-decoration-underline d-block mb-2">
-                        Voir les détails
-                    </a>
+                    <p class="text-sm text-gray-700 flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 12.414m0 0L9.172 8.172m4.242 4.242L15 9m0 0l1.414 1.414M15 9V3m6 6h-6m6 0l-1.414 1.414M15 9l-1.414-1.414"></path></svg>
+                        <span th:text="${job.location}">Lieu</span>
+                    </p>
 
-                    <div th:if="${job.recruiter != null and job.recruiter.email != null and currentUserEmail == job.recruiter.email}" class="mt-2">
-                        <a th:href="@{/editJob(id=${job.id})}" class="btn btn-sm btn-warning me-2">✏️ Modifier</a>
-                        <a th:href="@{/deleteJob(id=${job.id})}" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?')">🗑️ Supprimer</a>
+                    <p class="text-sm text-gray-700 flex items-center gap-2 mb-2">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.343-3 3v1a3 3 0 003 3m0 0a3 3 0 003-3v-1a3 3 0 00-3-3z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v2m0-16V3"></path></svg>
+                        <span th:text="${job.salary} + ' €'">Salaire</span>
+                    </p>
+
+                    <div class="flex flex-col gap-2 md:flex-row">
+                        <a th:href="@{/job/{id}(id=${job.id})}"
+                           class="w-full text-blue-700 border border-blue-600 hover:bg-blue-50 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300">
+                            🔍 Voir détails
+                        </a>
                     </div>
 
-                    <div th:if="${currentUserRole == 'CANDIDATE'}" class="mt-2">
-                        <a th:href="@{/apply/{id}(id=${job.id})}" class="btn btn-sm btn-primary">📄 Postuler</a>
+                    <!-- Actions recruteur -->
+                    <div th:if="${job.recruiter != null and job.recruiter.email != null and currentUserEmail == job.recruiter.email}" class="mt-4 space-x-2">
+                        <a th:href="@{/editJob(id=${job.id})}" class="text-yellow-600 text-sm font-medium hover:underline">✏️ Modifier</a>
+                        <a th:href="@{/deleteJob(id=${job.id})}" class="text-red-600 text-sm font-medium hover:underline" onclick="return confirm('Confirmer la suppression ?')">🗑️ Supprimer</a>
+                    </div>
+
+                    <!-- Action candidat -->
+                    <div th:if="${currentUserRole == 'CANDIDATE'}" class="mt-4">
+                        <a th:href="@{/apply/{id}(id=${job.id})}"
+                           class="w-full text-white bg-gradient-to-r from-cyan-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300">
+                            🚀 Postuler maintenant
+                        </a>
                     </div>
                 </div>
-                <div class="card-footer text-muted text-end small" th:text="${#temporals.format(job.createdAt, 'd MMM yyyy')}">1 avr. 2025</div>
+                <div class="bg-gray-50 text-right px-6 py-2 text-xs text-gray-500" th:text="${#temporals.format(job.createdAt, 'd MMM yyyy')}">1 avr. 2025</div>
             </div>
         </div>
-    </div>
+
 </main>
 
 <footer class="text-center py-4 border-top mt-5">

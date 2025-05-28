@@ -28,11 +28,12 @@ public class SecurityConfig {
                         // Accès public
                         .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
 
+                        .requestMatchers("/listJobs","/listCompanies","company/**").hasAnyRole("CANDIDATE", "RECRUITER")
+
+
                         // Routes accessibles aux candidats
                         .requestMatchers(
-                                "/listJobs",
-                                "/listCompanies",
-                                "/company/**",
+                                
                                 "/myApplications",
                                 "/apply",
                                 "/cancelApplication/**"
@@ -40,6 +41,7 @@ public class SecurityConfig {
 
                         // Routes accessibles aux recruteurs
                         .requestMatchers(
+
                                 "/createJob",
                                 "/editJob",
                                 "/deleteJob",

@@ -3,82 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Mes candidatures</title>
 <body class="bg-light">
 
-<!-- ✅ Header -->
-<header class="bg-light shadow-sm mb-4">
-    <div class="container py-3 d-flex justify-content-between align-items-center">
-        <h1 class="h4 text-primary">JobHub</h1>
-
-        <nav class="nav gap-3">
-            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <a href="/" class="nav-link">Accueil</a>
-                <a href="/listJobs" class="nav-link">Offres</a>
-                <a href="/listCompanies" class="nav-link">Entreprises</a>
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-600">JobHub</h1>
+        <nav class="flex flex-wrap items-center gap-4 text-sm">
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="flex gap-4">
+                <a href="/" class="text-gray-600 hover:text-blue-600">Accueil</a>
+                <a href="/listJobs" class="text-gray-600 hover:text-blue-600">Offres</a>
+                <a href="/listCompanies" class="text-blue-700 font-semibold">Entreprises</a>
             </div>
-
-            <div th:if="${currentUserRole == 'CANDIDATE'}" class="d-flex gap-3">
-                <a href="/myApplications" class="nav-link">Mes candidatures</a>
+            <div th:if="${currentUserRole == 'CANDIDATE'}" class="flex gap-4">
+                <a href="/myApplications" class="text-gray-600 hover:text-blue-600">Mes candidatures</a>
             </div>
-
-            <div th:if="${currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <a href="/applicationsReceived" class="nav-link">Reçues</a>
+            <div th:if="${currentUserRole == 'RECRUITER'}" class="flex gap-4">
+                <a href="/applicationsReceived" class="text-gray-600 hover:text-blue-600">Reçues</a>
             </div>
-
-            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="d-flex gap-3">
-                <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="nav-link ">Se déconnecter</button>
+            <div th:if="${currentUserRole == 'CANDIDATE' or currentUserRole == 'RECRUITER'}" class="flex gap-4">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="text-red-500 hover:underline">Se déconnecter</button>
                 </form>
             </div>
         </nav>
     </div>
 </header>
 
-<!-- ✅ Main -->
-<main class="container">
-    <h2 class="text-center mb-4">Mes candidatures envoyées</h2>
+<main class="max-w-7xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold text-center mb-6 text-blue-800">Mes candidatures envoyées</h2>
 
-    <!-- ✅ Message succès -->
-    <div th:if="${successMessage}" class="alert alert-success text-center" th:text="${successMessage}"></div>
+    <!-- ✅ Message de succès -->
+    <div th:if="${successMessage}" class="bg-blue-100 border border-blue-300 text-blue-800 text-sm p-4 rounded-lg mb-6 text-center max-w-2xl mx-auto" th:text="${successMessage}"></div>
 
-    <!-- ✅ Tableau -->
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle">
-            <thead class="table-primary">
+    <!-- ✅ Tableau des candidatures -->
+    <div class="overflow-x-auto rounded-xl shadow-lg border border-blue-100">
+        <table class="min-w-full divide-y divide-blue-200 text-sm">
+            <thead class="bg-blue-600 text-left">
             <tr>
-                <th>Titre du job</th>
-                <th>Entreprise</th>
-                <th>Lieu</th>
-                <th>Date</th>
-                <th>Statut</th>
-                <th>Action</th>
+                <th class="px-6 py-4 font-medium text-white">Titre du job</th>
+                <th class="px-6 py-4 font-medium text-white">Entreprise</th>
+                <th class="px-6 py-4 font-medium text-white">Lieu</th>
+                <th class="px-6 py-4 font-medium text-white">Date</th>
+                <th class="px-6 py-4 font-medium text-white">Statut</th>
+                <th class="px-6 py-4 font-medium text-white">Action</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="app : ${applications}">
-                <td th:text="${app.job.title}">Job</td>
-                <td th:text="${app.job.company.name}">Entreprise</td>
-                <td th:text="${app.job.location}">Lieu</td>
-                <td th:text="${#temporals.format(app.appliedAt, 'dd/MM/yyyy HH:mm')}">Date</td>
-                <td>
+            <tbody class="divide-y divide-blue-100 bg-white" th:if="${applications}">
+            <tr th:each="app : ${applications}" class="hover:bg-blue-50 transition-colors duration-150">
+                <td class="px-6 py-4 font-medium text-blue-900" th:text="${app.job.title}">Job</td>
+                <td class="px-6 py-4 text-blue-800" th:text="${app.job.company.name}">Entreprise</td>
+                <td class="px-6 py-4 text-blue-700" th:text="${app.job.location}">Lieu</td>
+                <td class="px-6 py-4 text-blue-600" th:text="${#temporals.format(app.appliedAt, 'dd/MM/yyyy HH:mm')}">Date</td>
+                <td class="px-6 py-4">
                         <span th:text="${app.status}"
-                              th:classappend="'badge bg-' + (${app.status} == 'APPROVED' ? 'success' : (${app.status} == 'REJECTED' ? 'danger' : 'warning'))">
+                              th:classappend="
+                                'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ' +
+                                (${app.status} == 'APPROVED' ? 'bg-green-100 text-green-800' :
+                                (${app.status} == 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'))">
                         </span>
                 </td>
-                <td>
+                <td class="px-6 py-4">
                     <div th:switch="${app.status}">
                         <div th:case="'PENDING'">
                             <form method="post" th:action="@{/cancelApplication/{id}(id=${app.id})}"
                                   onsubmit="return confirm('Confirmer l\'annulation de cette candidature ?');">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">Annuler</button>
+                                <button type="submit"
+                                        class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 shadow-sm">
+                                    Annuler
+                                </button>
                             </form>
                         </div>
                         <div th:case="*">
-                            <button class="btn btn-secondary btn-sm" disabled>Non annulable</button>
+                                <span class="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg text-sm font-medium inline-block">
+                                    Non annulable
+                                </span>
                         </div>
                     </div>
                 </td>
@@ -87,6 +87,7 @@
         </table>
     </div>
 </main>
+
 
 </body>
 </html>
